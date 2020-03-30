@@ -16,17 +16,9 @@ soon).
 
 It contains the rules to rebuild the benchmarks in the paper.
 
-However, instead just running the code, we strongly recommend you read it.
+However, instead just running the code, we strongly recommend you read it, as some steps depended on inputs obtained from manual curation
 
-Some steps depended on inputs obtained from manual curation
-
-- To evaluate benchmarking results over tested AMP prediction models, please refer to the file "benchmark_AMP_models.xlsx".
-
-- To reproduce benchmarking results over hemolytic peptides prediction model implemented in FACS, please follow the code bellow:
-
-```
-$ R --vanilla --slave hemolytic_peptides_model_benchmark.R
-```
+- To evaluate benchmarking results over tested AMP and hemolytic peptides prediction models, please refer to the *"train"* folder in [Macrel](https://github.com/BigDataBiology/macrel).
 
 The other results showed in the MACREL benchmarking can be reproduced using the scripts in the following order:
 
