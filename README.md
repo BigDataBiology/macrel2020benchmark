@@ -36,7 +36,15 @@ The other results showed in the MACREL benchmarking can be reproduced using the 
 
 (3) Annotation_rules.sh
 
-### Third party softwares
+### Homology effect
+
+In order to check homology in the training and testing data sets, please go to *"homology effects"* folder and follow the command:
+
+```$ ./retrain_complete.sh```
+
+This will retrain all models from MACREL, iAMP-2L and AMP Scanner v.2 with the non-redundant data sets, previously clustered with cd-hit at 80% of identity. The measures of accuracy, precision, and the confusion matrices will also be available. Be aware some of them can be generated in different time and will be printed in the screen.
+
+## Third party softwares
 
 In order to run all the codes, you will need besides MACREL:
 
@@ -46,5 +54,6 @@ In order to run all the codes, you will need besides MACREL:
 - [pigz](https://zlib.net/pigz/)
 - R v3.5+
 - [samtools](http://samtools.sourceforge.net/)
-- [bwa](https://github.com/lh3/bwa)
-- [eXpress](https://pachterlab.github.io/eXpress/)
+- [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
+- [Macrel](https://github.com/BigDataBiology/macrel)
+- Python 3+
