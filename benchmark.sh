@@ -2,9 +2,10 @@
 
 set -e
 
+source ~/anaconda3/etc/profile.d/conda.sh
+conda activate
+
 BENCHMARK_DIR=$PWD/BENCHMARK
-FACS="/path/to/FACS20.sh"
-addTEMP="/tmp/facstempdir"
 ART="/path/to/art_bin_MountRainier/art_illumina"
 
 ##################################################################################################################################################################
@@ -14,14 +15,14 @@ mkdir -p $BENCHMARK_DIR/refseq
 mkdir -p $BENCHMARK_DIR/ab/
 mkdir -p $BENCHMARK_DIR/sepgen/
 mkdir -p $BENCHMARK_DIR/simulated_data/{40M 60M 80M}
-mkdir -p $BENCHMARK_DIR/FACS/{genomes metagenomes abundances}
-mkdir -p $BENCHMARK_DIR/FACS/metagenomes/{40M 60M 80M}
+mkdir -p $BENCHMARK_DIR//{genomes metagenomes abundances}
+mkdir -p $BENCHMARK_DIR/MACREL/metagenomes/{40M 60M 80M}
 add20="$BENCHMARK_DIR/simulated_data/40M"
 add30="$BENCHMARK_DIR/simulated_data/60M"
 add40="$BENCHMARK_DIR/simulated_data/80M"
-out20M="$BENCHMARK_DIR/FACS/metagenomes/40M"
-out30M="$BENCHMARK_DIR/FACS/metagenomes/60M"
-out40M="$BENCHMARK_DIR/FACS/metagenomes/80M"
+out20M="$BENCHMARK_DIR/MACREL/metagenomes/40M"
+out30M="$BENCHMARK_DIR/MACREL/metagenomes/60M"
+out40M="$BENCHMARK_DIR/MACREL/metagenomes/80M"
 
 # To download genomes
 cd $BENCHMARK_DIR/refseq/
@@ -50,13 +51,13 @@ do
 done
 rm -rf $BENCHMARK_DIR/list
 
-# Running FACS in reference genomes:
+# Running MACREL in reference genomes:
 cat $BENCHMARK_DIR/ab/*.abund | cut -f1 | sort | uniq > .list
 
 for i in $(cat .list)
 do 
 	echo "Processing genome $i"
-	time $FACS -m c --fasta $BENCHMARK_DIR/sepgen/$i --outfolder $BENCHMARK_DIR/FACS/genomes/ --outtag ${i/.fna/} -t 3 --block 100M --log ${i/.fna/.log} --mem 0.75 --tmp $addTEMP --cls 1 --ep 0 > $addFACS/bashlog.${i/.fna/.txt}
+	time macrel contigs --fasta $BENCHMARK_DIR/sepgen/$i --outfolder $BENCHMARK_DIR/MACREL/genomes/ --tag ${i/.fna/} > $BENCHMARK_DIR/MACREL/bashlog.${i/.fna/.txt}
 done
 
 # Simulating metagenomes
@@ -150,14 +151,14 @@ zcat $add30/SAMEA2621229_2.fastq.gz | awk '{print (NR%4 == 1) ? "@HS25-SAMEA2621
 zcat $add30/SAMEA2621247_1.fastq.gz | awk '{print (NR%4 == 1) ? "@HS25-SAMEA2621247:30:1:1:2:" ++i ":" ++i "#0/1": $0}' | pigz --best > tmp2; mv tmp2 $add30/SAMEA2621247_1.fastq.gz
 zcat $add30/SAMEA2621247_2.fastq.gz | awk '{print (NR%4 == 1) ? "@HS25-SAMEA2621247:30:1:1:2:" ++i ":" ++i "#0/2": $0}' | pigz --best > tmp2; mv tmp2 $add30/SAMEA2621247_2.fastq.gz
 
-# Analyzing reads with FACS
+# Analyzing reads with MACREL
 for i in $(ls ab/ | grep ".abund.1")
 do 
-	time $FACS -m r --fwd $add20/${i/.abund.1/_1.fastq.gz} --rev $add20/${i/.abund.1/_2.fastq.gz} --outfolder $out20M --outtag ${i/.abund.1/.20M} -t 3 --block 100M --log ${i/.abund.1/.20M.log} --mem 0.70 --tmp $addTEMP >  $out20M/bashlog.screening.20M.${i/abund/}
+	time MACREL reads -1 $add20/${i/.abund.1/_1.fastq.gz} -2 $add20/${i/.abund.1/_2.fastq.gz} --outfolder $out20M --outtag ${i/.abund.1/.20M} >  $out20M/bashlog.screening.20M.${i/abund/}
 
-	time $FACS -m r --fwd $add30/${i/.abund.1/_1.fastq.gz} --rev $add30/${i/.abund.1/_2.fastq.gz} --outfolder $out30M --outtag ${i/.abund.1/.30M} -t 3 --block 100M --log ${i/.abund.1/.30M.log} --mem 0.70 --tmp $addTEMP >  $out30M/bashlog.screening.30M.${i/abund/}
+	time MACREL reads -1 $add30/${i/.abund.1/_1.fastq.gz} -2 $add30/${i/.abund.1/_2.fastq.gz} --outfolder $out30M --outtag ${i/.abund.1/.30M} >  $out30M/bashlog.screening.30M.${i/abund/}
 
-	time $FACS -m r --fwd $add40/${i/.abund.1/_1.fastq.gz} --rev $add40/${i/.abund.1/_2.fastq.gz} --outfolder $out40M --outtag ${i/.abund.1/.40M} -t 3 --block 100M --log ${i/.abund.1/.40M.log} --mem 0.70 --tmp $addTEMP >  $out40M/bashlog.screening.40M.${i/abund/}
+	time MACREL reads -1 $add40/${i/.abund.1/_1.fastq.gz} -2 $add40/${i/.abund.1/_2.fastq.gz} --outfolder $out40M --outtag ${i/.abund.1/.40M} >  $out40M/bashlog.screening.40M.${i/abund/}
 done
 
 # Converting fq to cram files
@@ -187,20 +188,21 @@ do
 	samtools view -T genomes.temp.fna -C -o 80M${i/.abund.1/}.cram 80M${i/.abund.1/}.bam
 	rm -rf 80M${i/.abund.1/}.bam genomes.temp.* .tmp
 done
+
 ##################################################################################################################################################################
 ##################################################################################################################################################################
-## AMPs from reference genomes and simulated metagenomes were parsed manually
-## All AMPs were analyzed manually to curate each cluster accordingly to the same sequence,
-## a preliminary list of unique sequences obtained as clusters representatives was generated as follows:
-##
-## zcat *.tsv.gz | cut -f2 | sed '1,1d' | sort | uniq -c | awk '{print $2"\t"$1}' > t
-## echo -e "Sequence\tCluster_size" > he; cat he t > preliminary_clusters; rm -rf he t
+## AMPs from reference genomes and simulated metagenomes were parsed manually                                                                                   ##
+## All AMPs were analyzed manually to curate each cluster accordingly to the same sequence,                                                                     ##
+## a preliminary list of unique sequences obtained as clusters representatives was generated as follows:                                                        ##
+##                                                                                                                                                              ##
+## zcat *.tsv.gz | cut -f2 | sed '/Sequence/d' | sort | uniq -c | awk '{print $2"\t"$1}' > t                                                                    ##
+## echo -e "Sequence\tCluster_size" > he; cat he t > preliminary_clusters; rm -rf he t                                                                          ##
 ##################################################################################################################################################################
-## Spurious analysis - To this it was used the tool from Hops et al. (2018), more info in: <https://bitbucket.org/bateman-group/spurio/src/master/>
-## Basically command was:
-## zcat FACS_output.tsv.gz | awk '{print ">"$1"\n"$2}' | sed '1,2d' > tmp.fa
-## python3 spurio.py -s 1 -e $(grep -c ">" tmp.fa) -v 1 -r /path/to/spurio/db/fullsource_filter.fa -q tmp.fa -qt spurio_res
-## rm -rf tmp.fa
-## awk '$2 > 0.8' spurious_res.txt | awk '{print $1}' > spurious_list
+## Spurious analysis - To this it was used the tool from Hops et al. (2018), more info in: <https://bitbucket.org/bateman-group/spurio/src/master/>             ##
+## Basically command was:                                                                                                                                       ##
+## zcat MACREL_output.tsv.gz | awk '{print ">"$1"\n"$2}' | sed '1,2d' > tmp.fa                                                                                  ##
+## python3 spurio.py -s 1 -e $(grep -c ">" tmp.fa) -v 1 -r /path/to/spurio/db/fullsource_filter.fa -q tmp.fa -qt spurio_res                                     ##
+## rm -rf tmp.fa                                                                                                                                                ##
+## awk '$2 > 0.8' spurious_res.txt | awk '{print $1}' > spurious_list                                                                                           ##   
 ##################################################################################################################################################################
 ##################################################################################################################################################################
