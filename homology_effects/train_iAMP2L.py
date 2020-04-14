@@ -5,8 +5,6 @@ import operator
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import tensorflow as tf
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.datasets import load_iris, load_breast_cancer
@@ -14,7 +12,6 @@ from sklearn.metrics import confusion_matrix, roc_auc_score, matthews_corrcoef, 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils import shuffle
-from keras.models import Sequential, load_model, model_from_json
 
 #User-set variables
 xtest            = pd.read_csv('sepdata/x.test_set_1_1.tsv', sep='\t', index_col=0).values
