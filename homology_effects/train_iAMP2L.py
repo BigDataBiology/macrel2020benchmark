@@ -167,98 +167,25 @@ class FuzzyKNN(BaseEstimator, ClassifierMixin):
 custModel = FuzzyKNN()
 ytest2 = [1 if i == 'AMP' else 0 for i in ytest1]
 true_class = np.array(ytest2)
-
-#### Proportion 1:1
-X = x11train
-y = [1 if i == 'AMP' else 0 for i in y11train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-print("\nGathering Testing Results...")
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-
 print("\nTP\tFP\tTN\tFN")
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
 
-#### Proportion 1:5
+for X,y in [
+        (x11train, y11train1),
+        (x15train, y15train1),
+        (x110train, y110train1),
+        (x120train, y120train1),
+        (x130train, y130train1),
+        (x140train, y140train1),
+        (x150train, y150train1),
+        ]:
 
-X = x15train
-y = [1 if i == 'AMP' else 0 for i in y15train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
+    y = [int(yi == 'AMP') for yi in y]
+    custModel.fit(X, y)
 
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
+    preds = custModel.predict(xtest)
+    classe = [pre_class[0] for pre_class in preds]
+    pred_class = np.array(classe)
+    tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
 
-#### Proportion 1:10
+    print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
 
-X = x110train
-y = [1 if i == 'AMP' else 0 for i in y110train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
-
-#### Proportion 1:20
-
-X = x120train
-y = [1 if i == 'AMP' else 0 for i in y120train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
-
-#### Proportion 1:30
-
-X = x130train
-y = [1 if i == 'AMP' else 0 for i in y130train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
-
-#### Proportion 1:40
-
-X = x140train
-y = [1 if i == 'AMP' else 0 for i in y140train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
-
-#### Proportion 1:50
-
-X = x150train
-y = [1 if i == 'AMP' else 0 for i in y150train1]
-xTrain, xTest, yTrain, yTest = train_test_split(X,y)
-custModel.fit(xTrain, yTrain)
-
-preds = custModel.predict(xtest)
-classe = [pre_class[0] for pre_class in preds]
-pred_class = np.array(classe)
-tn, fp, fn, tp = confusion_matrix(true_class,pred_class).ravel()
-print("{}\t{}\t{}\t{}".format(tp,fp,tn,fn))
-
-#END OF PROGRAM
