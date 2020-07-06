@@ -28,6 +28,12 @@ The other results showed in the MACREL benchmarking can be reproduced using the 
 
 (3) Annotation_rules.sh
 
+-- To generate Figure 3, please run:
+
+```
+$ R --slave --vanilla < plot_figure_3.R
+```
+
 -- To generate Figure 4, please run:
 
 ```
