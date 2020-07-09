@@ -6,7 +6,7 @@ import numpy as np
 
 data = pd.read_excel('Benchmark_figure4_datasource.xlsx')
 data = pd.pivot_table(data,
-        index=['Metagenome'], columns=['Depth (m)'])
+        index=['Metagenome template'], columns=['Depth (m)'])
 
 smorfs = data['smORFs']
 n_amps = data['Predicted AMPs']
