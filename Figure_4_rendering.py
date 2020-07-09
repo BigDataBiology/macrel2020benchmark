@@ -27,12 +27,12 @@ b_amps = pd.read_table(StringIO(data), index_col=0, header=None)
 b_amps.columns = ['40', '60', '80']
 
 data = '''
-SAMEA2466916	74	88	96
-SAMEA2466953	81	92	106
-SAMEA2466965	72	86	101
-SAMEA2621107	9	9	14
-SAMEA2621229	28	35	41
-SAMEA2621247	9	15	19
+SAMEA2466916	77.9	89.8	87.3
+SAMEA2466953	73.6	74.2	79.7
+SAMEA2466965	69.9	77.5	81.5
+SAMEA2621107	50.0	39.1	43.8
+SAMEA2621229	47.5	58.3	52.6
+SAMEA2621247	42.9	42.9	45.2
 '''
 c = pd.read_table(StringIO(data), index_col=0, header=None)
 c.columns = ['40', '60', '80']
