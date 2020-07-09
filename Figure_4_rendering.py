@@ -5,15 +5,14 @@ import pandas as pd
 import numpy as np
 
 data = pd.read_excel('Benchmark_figure4_datasource.xlsx')
-data.rename(columns={'Detph (M)': 'Depth (m)'}, inplace=True)
 data = pd.pivot_table(data,
         index=['Metagenome'], columns=['Depth (m)'])
 
 smorfs = data['smORFs']
 n_amps = data['Predicted AMPs']
-found_ref = data['% Found']
-spurious_per = data['% spurious']
-time_in_h = data['Time in hours']
+found_ref = data['Found in ref genomes (%)']
+spurious_per = data['Spurious (%)']
+time_in_h = data['Time (hours)']
 
 data = '''
 1	12.4729	0.142229	18.7093	0.213344	24.9458	0.284459
