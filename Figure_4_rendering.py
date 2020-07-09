@@ -4,51 +4,16 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 
-data = '''
-SAMEA2466916	14849	16156	17794
-SAMEA2466953	22961	25284	26806
-SAMEA2466965	22737	23755	24579
-SAMEA2621107	10453	11475	12594
-SAMEA2621229	16823	19529	22761
-SAMEA2621247	11452	12937	15214
-'''
-smorfs = pd.read_table(StringIO(data), index_col=0, header=None)
-smorfs.columns = ['40', '60', '80']
+data = pd.read_excel('Benchmark_figure4_datasource.xlsx')
+data.rename(columns={'Detph (M)': 'Depth (m)'}, inplace=True)
+data = pd.pivot_table(data,
+        index=['Metagenome'], columns=['Depth (m)'])
 
-data = '''
-SAMEA2466916	95	98	110
-SAMEA2466953	110	124	133
-SAMEA2466965	103	111	124
-SAMEA2621107	18	23	32
-SAMEA2621229	59	60	78
-SAMEA2621247	21	35	42
-'''
-b_amps = pd.read_table(StringIO(data), index_col=0, header=None)
-b_amps.columns = ['40', '60', '80']
-
-data = '''
-SAMEA2466916	77.9	89.8	87.3
-SAMEA2466953	73.6	74.2	79.7
-SAMEA2466965	69.9	77.5	81.5
-SAMEA2621107	50.0	39.1	43.8
-SAMEA2621229	47.5	58.3	52.6
-SAMEA2621247	42.9	42.9	45.2
-'''
-c = pd.read_table(StringIO(data), index_col=0, header=None)
-c.columns = ['40', '60', '80']
-
-
-data = '''
-SAMEA2466916	8.4	9.2	7.3
-SAMEA2466953	5.5	12.1	9.0
-SAMEA2466965	9.7	9.0	9.7
-SAMEA2621107	5.6	4.3	6.3
-SAMEA2621229	10.2	10.0	16.7
-SAMEA2621247	14.3	17.1	11.9
-'''
-d = pd.read_table(StringIO(data), header=None, index_col=0)
-d.columns = ['40', '60', '80']
-
+smorfs = data['smORFs']
+n_amps = data['Predicted AMPs']
+found_ref = data['% Found']
+spurious_per = data['% spurious']
+time_in_h = data['Time in hours']
 
 data = '''
 1	12.4729	0.142229	18.7093	0.213344	24.9458	0.284459
@@ -506,18 +471,6 @@ e_list = pd.DataFrame(e_list)
 e_list.columns = ['label','X','value']
 e_list['value'] = e_list['value'].astype(float)
 
-data = '''
-SAMEA2466916	15.5397236111111	21.2158613888889	26.8928680555556
-SAMEA2466953	16.1380036111111	14.0591791666667	22.3776875
-SAMEA2466965	15.0870802777778	19.5829013888889	23.7427947222222
-SAMEA2621107	9.24623222222222	13.0138227777778	16.7747761111111
-SAMEA2621229	12.7975919444444	17.7405619444444	19.9588461111111
-SAMEA2621247	12.4175627777778	14.9514516666667	20.3635161111111
-'''
-f = pd.read_table(StringIO(data), header=None, index_col=0)
-f.columns = ['40', '60', '80']
-
-
 figsize = 9,15
 fig,axes = plt.subplots(3,2,figsize=figsize)
 
@@ -529,26 +482,25 @@ axes[0][0].set_ylabel('smORFs\n(1,000s)',fontsize=20)
 axes[0][0].tick_params('both',labelsize = 20)
 axes[0][0].set_title('a)',fontsize=20,loc='left')
 
-sns.stripplot(data=b_amps, ax=axes[0][1],size=10)
-sns.boxplot(data=b_amps, ax=axes[0][1], color='white', width=.2)
+sns.stripplot(data=n_amps, ax=axes[0][1],size=10)
+sns.boxplot(data=n_amps, ax=axes[0][1], color='white', width=.2)
 axes[0][1].set_ylabel('AMPs\n(count)',fontsize=20)
 axes[0][1].tick_params('both',labelsize = 20)
 axes[0][1].set_title('b)',fontsize=20,loc='left')
 
 
-sns.stripplot(data=c, ax=axes[1][0],size=10)
-sns.boxplot(data=c, ax=axes[1][0], color='white', width=.2)
+sns.stripplot(data=found_ref, ax=axes[1][0],size=10)
+sns.boxplot(data=found_ref, ax=axes[1][0], color='white', width=.2)
 axes[1][0].set_ylabel('% of AMPs found in references',fontsize=20)
 axes[1][0].tick_params('both',labelsize = 20)
 axes[1][0].set_title('c)',fontsize=20,loc='left')
 
 
-sns.stripplot(data=d, ax=axes[1][1],size=10)
-sns.boxplot(data=d, ax=axes[1][1], color='white', width=.2)
+sns.stripplot(data=spurious_per, ax=axes[1][1],size=10)
+sns.boxplot(data=spurious_per, ax=axes[1][1], color='white', width=.2)
 axes[1][1].set_ylabel('Spurious\n(% of AMPs)',fontsize=20)
 axes[1][1].tick_params('both',labelsize = 20)
 axes[1][1].set_title('d)',fontsize=20,loc='left')
-
 
 
 sns.boxplot(x='X', hue='label', y='value', data=e_list,width=.6,ax=axes[2][0],color='white',fliersize=0,dodge=False)
@@ -560,8 +512,8 @@ axes[2][0].set_xlabel("Nr reads (millions)",fontsize=20)
 axes[2][0].set_yscale('log')
 #sns.despine(fig, trim=True)
 
-sns.stripplot(data=f, ax=axes[2][1],size=10)
-sns.boxplot(data=f, ax=axes[2][1], color='white', width=.2)
+sns.stripplot(data=time_in_h, ax=axes[2][1],size=10)
+sns.boxplot(data=time_in_h, ax=axes[2][1], color='white', width=.2)
 axes[2][1].set_ylabel('Processing time\n(hours)',fontsize=20)
 axes[2][1].tick_params('both',labelsize = 20)
 axes[2][1].set_title('f)',fontsize=20,loc='left')
