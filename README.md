@@ -24,7 +24,7 @@ The other results showed in the MACREL benchmarking can be reproduced using the 
 
 (1) Benchmark.sh
 
-(2) FACS_in_real_metagenomes.sh
+(2) Macrel_in_real_metagenomes.sh
 
 (3) Annotation_rules.sh
 
