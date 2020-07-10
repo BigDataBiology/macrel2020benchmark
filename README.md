@@ -31,13 +31,13 @@ The other results showed in the MACREL benchmarking can be reproduced using the 
 -- To generate Figure 3, please run:
 
 ```
-$ R --slave --vanilla < plot_figure_3.R
+$ python3 Figure_3_rendering.py
 ```
 
 -- To generate Figure 4, please run:
 
 ```
-$ ./python Figure_4_rendering.py
+$ ./python3 Figure_4_rendering.py
 ```
 
 ### Homology effect
