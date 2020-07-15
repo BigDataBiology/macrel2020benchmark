@@ -1,20 +1,30 @@
 from six import StringIO
+import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+matplotlib.style.use('default')
+
+matplotlib.rcParams['legend.fontsize'] = 10.0
+matplotlib.rcParams['font.size'] = 10.0
+matplotlib.rc('ytick', labelsize=9)
+matplotlib.rc('xtick', labelsize=9)
+
 
 data = pd.read_excel('Benchmark_figure4_datasource.xlsx')
 data = pd.pivot_table(data,
         index=['Metagenome template'], columns=['Depth (m)'])
 
 smorfs = data['smORFs']
+smorfs = smorfs/1000
+
 n_amps = data['Predicted AMPs']
 found_ref = data['Found in ref genomes (%)']
 spurious_per = data['Spurious (%)']
 time_in_h = data['Time (hours)']
 
-data = '''
+found_raw_data = '''
 1	12.4729	0.142229	18.7093	0.213344	24.9458	0.284459
 2	0.818383	0.071195	5.14352	0.106793	6.85803	0.14239
 3	5.65041	0.260312	1.22757	0.390468	1.63677	0.520624
@@ -441,81 +451,78 @@ data = '''
 '''
 
 
-e = pd.read_table(StringIO(data), index_col=0, header=None)
-e.columns = ['40f','40n','60f','60n','80f','80n']
-e_list = []
-for index in e.columns :
+found_raw_data = pd.read_table(StringIO(found_raw_data), index_col=0, header=None)
+found_raw_data.columns = ['40f','40n','60f','60n','80f','80n']
+found_data = []
+for index in found_raw_data.columns :
     num = int(index[0:2])
     if_found = str(index[-1])
-    temp = e[index].values
+    temp = found_raw_data[index].values
     temp = temp[~np.isnan(temp)]
-
-    #temp = np.log(temp)
-    # Q1 = np.percentile(temp, 25)
-    # Q3 = np.percentile(temp, 75)
-    # IQR = Q3 - Q1
-    # outlier_step = 1.5 * IQR
-    # min = Q1 - outlier_step
-    # max = Q3 + outlier_step
-    #
-    # temp = [i for i in temp if i >= min and i <= max ]
     for i in temp:
         if if_found == 'f':
-            e_list.append(['Found',str(num)+'f',i])
+            found_data.append(['Found',num,i])
         else:
-            e_list.append(['Not_found',str(num)+'n',  i])
+            found_data.append(['Not_found',num,  i])
 
-e_list = np.array(e_list)
-e_list = pd.DataFrame(e_list)
-e_list.columns = ['label','X','value']
-e_list['value'] = e_list['value'].astype(float)
+found_data = np.array(found_data)
+found_data = pd.DataFrame(found_data)
+found_data.columns = ['label','X','value']
+found_data['value'] = found_data['value'].astype(float)
 
-figsize = 9,15
-fig,axes = plt.subplots(3,2,figsize=figsize)
+figsize = 4.5,6
+fig,axes = plt.subplots(3,2,figsize=figsize, sharex=True)
 
-
-smorfs = smorfs/1000
-sns.stripplot(data=smorfs, ax=axes[0][0],size=10)
-sns.boxplot(data=smorfs, ax=axes[0][0], color='white', width=.2)
-axes[0][0].set_ylabel('smORFs\n(1,000s)',fontsize=20)
-axes[0][0].tick_params('both',labelsize = 20)
-axes[0][0].set_title('a)',fontsize=20,loc='left')
-
-sns.stripplot(data=n_amps, ax=axes[0][1],size=10)
-sns.boxplot(data=n_amps, ax=axes[0][1], color='white', width=.2)
-axes[0][1].set_ylabel('AMPs\n(count)',fontsize=20)
-axes[0][1].tick_params('both',labelsize = 20)
-axes[0][1].set_title('b)',fontsize=20,loc='left')
+[[smorfs_ax, amps_ax],
+ [found_ax, spurious_ax],
+ [coverage_ax, time_ax]] = axes
 
 
-sns.stripplot(data=found_ref, ax=axes[1][0],size=10)
-sns.boxplot(data=found_ref, ax=axes[1][0], color='white', width=.2)
-axes[1][0].set_ylabel('% of AMPs found in references',fontsize=20)
-axes[1][0].tick_params('both',labelsize = 20)
-axes[1][0].set_title('c)',fontsize=20,loc='left')
+sns.stripplot(data=smorfs, ax=smorfs_ax, size=4)
+sns.boxplot(data=smorfs, ax=smorfs_ax, color='white', width=.2)
+smorfs_ax.set_ylabel('smORFs\n(1,000s)')
+smorfs_ax.set_title('a)', loc='left')
 
+sns.stripplot(data=n_amps, ax=amps_ax, size=4)
+sns.boxplot(data=n_amps, ax=amps_ax, color='white', width=.2)
+amps_ax.set_ylabel('AMPs\n(count)')
+amps_ax.set_title('b)', loc='left')
 
-sns.stripplot(data=spurious_per, ax=axes[1][1],size=10)
-sns.boxplot(data=spurious_per, ax=axes[1][1], color='white', width=.2)
-axes[1][1].set_ylabel('Spurious\n(% of AMPs)',fontsize=20)
-axes[1][1].tick_params('both',labelsize = 20)
-axes[1][1].set_title('d)',fontsize=20,loc='left')
+sns.stripplot(data=found_ref, ax=found_ax, size=4)
+sns.boxplot(data=found_ref, ax=found_ax, color='white', width=.2)
+found_ax.set_ylabel('AMPs found\nin reference (%)')
+found_ax.set_title('c)', loc='left')
 
+sns.stripplot(data=spurious_per, ax=spurious_ax, size=4)
+sns.boxplot(data=spurious_per, ax=spurious_ax, color='white', width=.2)
+spurious_ax.set_ylabel('Spurious\n(% of AMPs)')
+spurious_ax.set_title('d)', loc='left')
 
-sns.boxplot(x='X', hue='label', y='value', data=e_list,width=.6,ax=axes[2][0],color='white',fliersize=0,dodge=False)
-sns.stripplot(x='X', hue='label', y='value',data=e_list, ax=axes[2][0],size=2)
-axes[2][0].set_ylabel(' Coverage\n(reads per million)',fontsize=20)
-axes[2][0].tick_params('both',labelsize = 20)
-axes[2][0].set_title('e)',fontsize=20,loc='left')
-axes[2][0].set_xlabel("Nr reads (millions)",fontsize=20)
-axes[2][0].set_yscale('log')
-#sns.despine(fig, trim=True)
+sns.boxplot(x='X',
+            hue='label',
+            y='value',
+            data=found_data,
+            ax=coverage_ax,
+            color='white',
+            fliersize=0)
+sns.stripplot(x='X',
+                dodge=True,
+                hue='label',
+                y='value',
+                data=found_data,
+                ax=coverage_ax,
+                size=2)
+coverage_ax.set_ylabel(' Coverage\n(reads per million)')
+coverage_ax.set_title('e)', loc='left')
+coverage_ax.set_xlabel("Nr reads (millions)")
+coverage_ax.set_yscale('log')
 
-sns.stripplot(data=time_in_h, ax=axes[2][1],size=10)
-sns.boxplot(data=time_in_h, ax=axes[2][1], color='white', width=.2)
-axes[2][1].set_ylabel('Processing time\n(hours)',fontsize=20)
-axes[2][1].tick_params('both',labelsize = 20)
-axes[2][1].set_title('f)',fontsize=20,loc='left')
-axes[2][1].set_xlabel("Nr reads (millions)",fontsize=20)
+sns.stripplot(data=time_in_h, ax=time_ax, size=4)
+sns.boxplot(data=time_in_h, ax=time_ax, color='white', width=.2)
+time_ax.set_ylabel('Walltime (h)')
+time_ax.set_title('f)', loc='left')
+time_ax.set_xlabel("Nr reads (millions)")
+
+sns.despine(fig, trim=True)
 fig.tight_layout()
 fig.savefig('Fig4.svg')
