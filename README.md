@@ -9,9 +9,6 @@ This is a companion repository to:
 >   bioRxiv 2019.12.17.880385; doi:
 >   [https://doi.org/10.1101/2019.12.17.880385](https://doi.org/10.1101/2019.12.17.880385)
 
-(The preprint still uses the old name of the tool, _FACS_ and will be updated
-soon).
-
 ## Contents
 
 It contains the rules to rebuild the benchmarks in the paper.
