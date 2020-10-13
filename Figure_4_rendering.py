@@ -481,22 +481,22 @@ fig,axes = plt.subplots(3,2,figsize=figsize, sharex=True)
 sns.stripplot(data=smorfs, ax=smorfs_ax, size=4)
 sns.boxplot(data=smorfs, ax=smorfs_ax, color='white', width=.2)
 smorfs_ax.set_ylabel('smORFs\n(1,000s)')
-smorfs_ax.set_title('a)', loc='left')
+smorfs_ax.set_title('A', loc='left')
 
 sns.stripplot(data=n_amps, ax=amps_ax, size=4)
 sns.boxplot(data=n_amps, ax=amps_ax, color='white', width=.2)
 amps_ax.set_ylabel('AMPs\n(count)')
-amps_ax.set_title('b)', loc='left')
+amps_ax.set_title('B', loc='left')
 
 sns.stripplot(data=found_ref, ax=found_ax, size=4)
 sns.boxplot(data=found_ref, ax=found_ax, color='white', width=.2)
 found_ax.set_ylabel('AMPs found\nin reference (%)')
-found_ax.set_title('c)', loc='left')
+found_ax.set_title('C', loc='left')
 
 sns.stripplot(data=spurious_per, ax=spurious_ax, size=4)
 sns.boxplot(data=spurious_per, ax=spurious_ax, color='white', width=.2)
 spurious_ax.set_ylabel('Spurious\n(% of AMPs)')
-spurious_ax.set_title('d)', loc='left')
+spurious_ax.set_title('D', loc='left')
 
 sns.boxplot(x='X',
             hue='label',
@@ -513,14 +513,14 @@ sns.stripplot(x='X',
                 ax=coverage_ax,
                 size=2)
 coverage_ax.set_ylabel(' Coverage\n(reads per million)')
-coverage_ax.set_title('e)', loc='left')
+coverage_ax.set_title('E', loc='left')
 coverage_ax.set_xlabel("Nr reads (millions)")
 coverage_ax.set_yscale('log')
 
 sns.stripplot(data=time_in_h, ax=time_ax, size=4)
 sns.boxplot(data=time_in_h, ax=time_ax, color='white', width=.2)
 time_ax.set_ylabel('Walltime (h)')
-time_ax.set_title('f)', loc='left')
+time_ax.set_title('F', loc='left')
 time_ax.set_xlabel("Nr reads (millions)")
 
 sns.despine(fig, trim=True)
