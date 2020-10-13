@@ -57,7 +57,7 @@ cat $BENCHMARK_DIR/ab/*.abund | cut -f1 | sort | uniq > .list
 for i in $(cat .list)
 do 
 	echo "Processing genome $i"
-	time macrel contigs --fasta $BENCHMARK_DIR/sepgen/$i --outfolder $BENCHMARK_DIR/MACREL/genomes/ --tag ${i/.fna/} > $BENCHMARK_DIR/MACREL/bashlog.${i/.fna/.txt}
+	/usr/bin/time -v macrel contigs --fasta $BENCHMARK_DIR/sepgen/$i --outfolder $BENCHMARK_DIR/MACREL/genomes/ --tag ${i/.fna/} > $BENCHMARK_DIR/MACREL/bashlog.${i/.fna/.txt}
 done
 
 # Simulating metagenomes
@@ -154,11 +154,11 @@ zcat $add30/SAMEA2621247_2.fastq.gz | awk '{print (NR%4 == 1) ? "@HS25-SAMEA2621
 # Analyzing reads with MACREL
 for i in $(ls ab/ | grep ".abund.1")
 do 
-	time MACREL reads -1 $add20/${i/.abund.1/_1.fastq.gz} -2 $add20/${i/.abund.1/_2.fastq.gz} --outfolder $out20M --outtag ${i/.abund.1/.20M} >  $out20M/bashlog.screening.20M.${i/abund/}
+	/usr/bin/time -v MACREL reads -1 $add20/${i/.abund.1/_1.fastq.gz} -2 $add20/${i/.abund.1/_2.fastq.gz} --outfolder $out20M --outtag ${i/.abund.1/.20M} >  $out20M/bashlog.screening.20M.${i/abund/}
 
-	time MACREL reads -1 $add30/${i/.abund.1/_1.fastq.gz} -2 $add30/${i/.abund.1/_2.fastq.gz} --outfolder $out30M --outtag ${i/.abund.1/.30M} >  $out30M/bashlog.screening.30M.${i/abund/}
+	/usr/bin/time -v MACREL reads -1 $add30/${i/.abund.1/_1.fastq.gz} -2 $add30/${i/.abund.1/_2.fastq.gz} --outfolder $out30M --outtag ${i/.abund.1/.30M} >  $out30M/bashlog.screening.30M.${i/abund/}
 
-	time MACREL reads -1 $add40/${i/.abund.1/_1.fastq.gz} -2 $add40/${i/.abund.1/_2.fastq.gz} --outfolder $out40M --outtag ${i/.abund.1/.40M} >  $out40M/bashlog.screening.40M.${i/abund/}
+	/usr/bin/time -v MACREL reads -1 $add40/${i/.abund.1/_1.fastq.gz} -2 $add40/${i/.abund.1/_2.fastq.gz} --outfolder $out40M --outtag ${i/.abund.1/.40M} >  $out40M/bashlog.screening.40M.${i/abund/}
 done
 
 # Converting fq to cram files
