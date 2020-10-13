@@ -26,7 +26,7 @@ out40M="$BENCHMARK_DIR/MACREL/metagenomes/80M"
 
 # To download genomes
 cd $BENCHMARK_DIR/refseq/
-wget wget 'http://progenomes1.embl.de/data/repGenomes/representatives.contigs.fasta.gz' --output-document 'representatives.contigs.fasta.gz'
+wget 'http://progenomes1.embl.de/data/repGenomes/representatives.contigs.fasta.gz' --output-document 'representatives.contigs.fasta.gz'
 
 cd $BENCHMARK_DIR/ab/
 wget https://zenodo.org/api/files/0f81e436-b108-435c-8339-9fbc9c4daae8/SAMEA2466916.abund
