@@ -37,8 +37,9 @@ blastp -db DRAMP.db -query AMPs.fasta -out AMPs.dramp.tsv -evalue 1e-5 -word_siz
 awk '$3 >= 70 && $4 <= 0.00001 && $6 >= 95' blastresults.tsv | sort -k1,1 -k5,5gr -k4,4g -k3,3gr | sort -u -k1,1 --merge > blastresults.parsed.tsv
 
 ## 2. using local processing with DRAMP database
-awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.dramp.tsv | sort -k1,1 -k14,14gr -k13,13g -k4,4gr | sort -u -k1,1 --merge > AMPs.dramp.parsed.tsv
-awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.patented.tsv | sort -k1,1 -k14,14gr -k13,13g -k4,4gr | sort -u -k1,1 --merge > AMPs.patented.parsed.tsv
+awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.dramp.tsv | sort -k1,1 -k14,14gr -k13,13g -k5,5gr | sort -u -k1,1 --merge > AMPs.dramp.parsed.tsv
+awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.patented.tsv | sort -k1,1 -k14,14gr -k13,13g -k5,5gr | sort -u -k1,1 --merge > AMPs.patented.parsed.tsv
+
 ##################################################################################################################################################################
 ##################################################################################################################################################################
 ## Results obtained with Macrel to representative genomes,
