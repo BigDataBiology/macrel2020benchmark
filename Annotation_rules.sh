@@ -41,9 +41,9 @@ awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.dramp.tsv | sort -k1,1 -k14,1
 awk '$4 >= 70 && $13 <= 0.00001 && $15 >= 95' AMPs.patented.tsv | sort -k1,1 -k14,14gr -k13,13g -k4,4gr | sort -u -k1,1 --merge > AMPs.patented.parsed.tsv
 ##################################################################################################################################################################
 ##################################################################################################################################################################
-## Results obtained with FACS to representative genomes,
+## Results obtained with Macrel to representative genomes,
 ## metagenomes and real data were also transformed after elimination of
-## spurious ORFs into FACS files and were used to check overlapping in
+## spurious ORFs into Macrel files and were used to check overlapping in
 ## those results -- Same parameters of blast searches were applied.
 ##################################################################################################################################################################
 ##################################################################################################################################################################
