@@ -4,10 +4,9 @@ This repository includes code for benchmarking *MACREL*.
 
 This is a companion repository to:
 
->   MACREL: antimicrobial peptide screening in genomes and metagenomes
->   Celio Dias Santos-Junior, Shaojun Pan, Xing-Ming Zhao, Luis Pedro Coelho
->   bioRxiv 2019.12.17.880385; doi:
->   [https://doi.org/10.1101/2019.12.17.880385](https://doi.org/10.1101/2019.12.17.880385)
+>   Santos-Júnior CD, Pan S, Zhao X, Coelho LP. 2020.
+>   Macrel: antimicrobial peptide screening in genomes and metagenomes.
+>   PeerJ 8:e10555. DOI: [10.7717/peerj.10555](https://doi.org/10.7717/peerj.10555)
 
 ## Contents
 
